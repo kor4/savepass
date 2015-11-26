@@ -37,25 +37,55 @@ class Account{
 	private string WebName;
 	private string NameAccount;// and email its maybe
 	private string Password;
+	private string Password2;
 	private string PasswordCr;
 	private string email;
+	private string note;
+	private bool ok;
 	
 
-	public Account(string str1,string str2){
+	public Account(string str1,string str2, string str3,string str4){
 		this.WebName=str1;
-		this.NameAccount=str2;	
-		//this.PasswordCr=decrypt(this.password)
+		this.NameAccount=str2;
+		this.Password = str3;
+		this.Password2 = str4;
+		//this.PasswordCr=encrypt_passw ();
 		//writeToFile();
 		
 	}
 	public string readacc(){
-	return NameAccount + "\n " + Password;
+		return NameAccount + "\n " + Password;
 	}
 	
-	public void writeToFile(){
-		//OleDbConnection oledb= new OleDbConnection(
+	public void WriteAccToDB(){
+		this.CheckPasswEqual();
+	}
+	private void CheckPasswEqual(){
+		if (this.Password == this.Password2) 
+		{
+			this.ok = true;
+			Console.WriteLine("passwords is equal");			
+			
+		}
+		else
+		{
+			this.ok = false;
+			Console.WriteLine("passwords is unequal");
+		}
+	}
+	private string encrypt_passw(){
+		string passw_encr = "1";
+		return passw_encr;
+	}
+	private string decrypt_passw(){
+		string passw = "1";
+		return passw;
 	}
 }
+	//public void writeToFile(){
+	//	//OleDbConnection oledb= new OleDbConnection(
+	//}
+//}
 
 public class ConnectionMDB{
 	OleDbConnection conn;
@@ -70,3 +100,5 @@ public class ConnectionMDB{
     
 
 };
+
+//public class 

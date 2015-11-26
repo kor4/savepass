@@ -28,15 +28,16 @@ namespace savepass
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//ConnectionMDB conn;
-			ConnectionMDB conn= new ConnectionMDB();
+			//ConnectionMDB conn= new ConnectionMDB();
 			//
 		}
 		
-		void Button1Click(object sender, EventArgs e)
+		void bWriteClick(object sender, EventArgs e)
 		{
 			//if 
-			Account acc1 = new Account(tbWebRes.Text,tbName.Text);
-			label1.Text=acc1.readacc();
+			Account acc1 = new Account(tbWebRes.Text, tbName.Text, tbPassword.Text, tbPassword2.Text );
+			//label1.Text=acc1.readacc();
+			acc1.WriteAccToDB();
 					
 		}
 		
