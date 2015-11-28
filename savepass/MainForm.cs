@@ -38,7 +38,7 @@ namespace savepass
 			Account acc1 = new Account(tbWebRes.Text, tbName.Text, tbPassword.Text, tbPassword2.Text );
 			//label1.Text=acc1.readacc();
 			acc1.WriteAccToDB();
-			Sqlite3 sqlconn = new Sqlite3();
+			
 					
 		}
 		

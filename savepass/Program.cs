@@ -8,10 +8,8 @@
  */
 using System;
 using System.Windows.Forms;
-using System.Linq;
+
 using System.Data;
-using System.Data.OleDb;
-using System.Data.SqlClient;
 
 
 namespace savepass
@@ -31,6 +29,7 @@ namespace savepass
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());
+			Sqlite3 sqlconn = new Sqlite3();
 			
 		}
 		
