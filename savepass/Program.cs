@@ -13,6 +13,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 
+
 namespace savepass
 {
 	/// <summary>
@@ -26,9 +27,11 @@ namespace savepass
 		[STAThread]
 		private static void Main(string[] args)
 		{
+		
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());
+			
 		}
 		
 	}
@@ -82,23 +85,6 @@ class Account{
 		return passw;
 	}
 }
-	//public void writeToFile(){
-	//	//OleDbConnection oledb= new OleDbConnection(
-	//}
-//}
 
-public class ConnectionMDB{
-	OleDbConnection conn;
-    OleDbDataAdapter adapter;
-    DataTable dtMain;
-    string DBPath;
-    
-    ConnectionMDB(){
-     DBPath = "C:\\Users\\Александр\\Documents\\testt.mdb";
-     
-    }
-    
-
-};
 
 //public class 
