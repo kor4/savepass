@@ -26,64 +26,14 @@ namespace savepass
 		private static void Main(string[] args)
 		{
 		
+			//Sqlite3 sqlconn = new Sqlite3();
+			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());
-			Sqlite3 sqlconn = new Sqlite3();
 			
+
 		}
 		
 	}
 }
-class Account{
-	private string WebName;
-	private string NameAccount;// and email its maybe
-	private string Password;
-	private string Password2;
-	private string PasswordCr;
-	private string email;
-	private string note;
-	private bool ok;
-	
-
-	public Account(string str1,string str2, string str3,string str4){
-		this.WebName=str1;
-		this.NameAccount=str2;
-		this.Password = str3;
-		this.Password2 = str4;
-		//this.PasswordCr=encrypt_passw ();
-		//writeToFile();
-		
-	}
-	public string readacc(){
-		return NameAccount + "\n " + Password;
-	}
-	
-	public void WriteAccToDB(){
-		this.CheckPasswEqual();
-	}
-	private void CheckPasswEqual(){
-		if (this.Password == this.Password2) 
-		{
-			this.ok = true;
-			Console.WriteLine("passwords is equal");			
-			
-		}
-		else
-		{
-			this.ok = false;
-			Console.WriteLine("passwords is unequal");
-		}
-	}
-	private string encrypt_passw(){
-		string passw_encr = "1";
-		return passw_encr;
-	}
-	private string decrypt_passw(){
-		string passw = "1";
-		return passw;
-	}
-}
-
-
-//public class 
