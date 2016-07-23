@@ -21,8 +21,9 @@ namespace savepass
 	public class Sqlite3
 	{
 		private string dbName = Application.StartupPath + "\\SP.db3";
-		private string NameNewDb;
+		//private string NameNewDb;
 		private string sql_query;
+		private SQLiteConnection connection;
 		
 		
 		public Sqlite3()
@@ -37,9 +38,10 @@ namespace savepass
 		}
 		private void _createDb()
 		{
-				this.NameNewDb = "SP.db3";
-				SQLiteConnection.CreateFile(NameNewDb);
-				SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source={0};", NameNewDb));
+				//this.NameNewDb = "SP.db3";
+				SQLiteConnection.CreateFile(dbName);
+				//SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source={0};", NameNewDb));
+				openConnectionDb();
 				SQLiteCommand cmd = new SQLiteCommand(@"CREATE TABLE [tbl_passwords] (
                     [id] integer PRIMARY KEY AUTOINCREMENT NOT NULL,
                     [resource_name] char(100) NOT NULL,
@@ -49,27 +51,38 @@ namespace savepass
                     [note] char(100) NOT NULL,
                     [del] integer NOT NULL
                     )", connection);
-     			connection.Open();
+     			//connection.Open();
         		cmd.ExecuteNonQuery();
         		connection.Close();	  									
 		}
 		
+		public void openConnectionDb()
+		{
+			connection = new SQLiteConnection(string.Format("Data Source={0};", dbName));
+			connection.Open();
+		}
+		
 		public DataTable getRecords()
 		{
-			string dbName = Application.StartupPath + "\\SP.db3";
+			//string dbName = Application.StartupPath + "\\SP.db3";
+			openConnectionDb();
 			DataSet ds = new DataSet();
-			SQLiteConnection conn = new SQLiteConnection(string.Format("Data Source={0};", dbName));
-			string sql = "SELECT resource_name, login, email, password, note FROM tbl_passwords WHERE del=0";
-			SQLiteDataAdapter da = new SQLiteDataAdapter(sql, conn);
+			string sql = "SELECT resource_name, login, email, password, note FROM tbl_passwords WHERE del=0 ORDER BY resource_name, login ASC";
+			SQLiteDataAdapter da = new SQLiteDataAdapter(sql, connection);
 			da.Fill(ds);
 			DataTable dt = ds.Tables[0];
+			connection.Close();
 			return dt;
 		}
 		
 		public void newRecord(Account Acc)//(string rn, string lg, string em, string pw, string nt)
 		{
-			SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source={0};", NameNewDb));
-			SQLiteCommand cmd = new SQLiteCommand(@"INSERT INTO tbl_passwords (resource_name, login, email, password, note, del ) values (@rn, @lg, @em, @pw, @nt, 0)", connection);
+			//connection = new SQLiteConnection(string.Format("Data Source={0};", dbName));
+			//connection.Open();
+			openConnectionDb();
+			
+			SQLiteCommand cmd = new SQLiteCommand(@"INSERT INTO tbl_passwords (resource_name, login, email, password, note, del) values (@rn, @lg, @em, @pw, @nt, 0)", connection);
+			
 			
 			SQLiteParameter param = new SQLiteParameter();
             param.ParameterName = "@rn";
@@ -108,42 +121,49 @@ namespace savepass
             {
                 Console.WriteLine("Ошибка, при выполнении запроса на добавление записи");
                 return;
-            }          	
+            }   
+            connection.Close();
 		}
-		public void editRecord()
+		public void editRecord(Account Acc)
 		{
-			SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source={0};", NameNewDb));
-			SQLiteCommand cmd = new SQLiteCommand(@"UPDATE tBl_passwords SET resource_name = @rn, login = @lg, email = @em, password = @pw, note = @nt, del = 0", connection);
-			SqlParameter param = new SqlParameter();
-           
+			//int id;
+			openConnectionDb();
+			SQLiteCommand cmd = new SQLiteCommand(@"UPDATE tbl_passwords SET email = @em, password = @pw, note = @nt WHERE resource_name = @rn AND login = @lg AND del = 0", connection);
+			//SQLiteDataReader reader = cmd.ExecuteReader();
+			SQLiteParameter param = new SQLiteParameter();
             param.ParameterName = "@rn";
-            param.Value = "1" ;//arg1
-            param.SqlDbType = SqlDbType.Text;
+            param.Value = Acc.getWebName();
             cmd.Parameters.Add(param);
-                      
-            param = new SqlParameter();         
+                     
+            param = new SQLiteParameter();        
             param.ParameterName = "@lg";
-            param.Value = "1" ;//arg2
-            param.SqlDbType = SqlDbType.Text;
+            param.Value = Acc.getNameAccount();
+            //param.SqlDbType = SqlDbType.Text;
             cmd.Parameters.Add(param);
             
-            param = new SqlParameter();
+            param = new SQLiteParameter();
             param.ParameterName = "@em";          
-            param.Value = "1" ;  //arg3      
-            param.SqlDbType = SqlDbType.Text;      
+            param.Value = Acc.getEmail();
+            //param.SqlDbType = SqlDbType.Text;      
             cmd.Parameters.Add(param);
 			
-            param = new SqlParameter();
+            param = new SQLiteParameter();
             param.ParameterName = "@pw";          
-            param.Value = "1"; //arg4        
-            param.SqlDbType = SqlDbType.Text;      
+            param.Value = Acc.getPasswordCr();
+            //param.SqlDbType = SqlDbType.Text;      
             cmd.Parameters.Add(param);  
 
-			param = new SqlParameter();
+			param = new SQLiteParameter();
             param.ParameterName = "@nt";          
-            param.Value = "1" ;  //arg5      
-            param.SqlDbType = SqlDbType.Text;      
+            param.Value = Acc.getNote();
+            //param.SqlDbType = SqlDbType.Text;      
             cmd.Parameters.Add(param);
+			//id = reader;
+			 
+			//SQLiteCommand cmd = new SQLiteCommand(@"UPDATE tBl_passwords SET resource_name = @rn, login = @lg, email = @em, password = @pw, note = @nt, del = 0", connection);
+			//SqlParameter param = new SqlParameter();
+           
+           
 			
 			try
                 {
@@ -151,10 +171,50 @@ namespace savepass
                 }
             catch
             {
-                Console.WriteLine("Ошибка, при выполнении запроса на добавление записи");
-                return;
+                Console.WriteLine("Ошибка, при выполнении запроса на изменение записи");
+               return;
             }    
 			
+		}
+		
+		public void deleteRecord(Account Acc)
+		{
+			openConnectionDb();
+			SQLiteCommand cmd = new SQLiteCommand(@"UPDATE tbl_passwords SET del = 1 WHERE resource_name = @rn AND login = @lg AND email = @em", connection);
+			
+			SQLiteParameter param = new SQLiteParameter();		
+            param.ParameterName = "@rn";
+            param.Value = Acc.getWebName();
+            cmd.Parameters.Add(param);
+                     
+            param = new SQLiteParameter();        
+            param.ParameterName = "@lg";
+            param.Value = Acc.getNameAccount();
+            //param.SqlDbType = SqlDbType.Text;
+            cmd.Parameters.Add(param);
+            
+            param = new SQLiteParameter();
+            param.ParameterName = "@em";          
+            param.Value = Acc.getEmail();
+            //param.SqlDbType = SqlDbType.Text;      
+            cmd.Parameters.Add(param);
+
+			//param = new SQLiteParameter();
+            //param.ParameterName = "@nt";          
+            //param.Value = Acc.getNote();
+            //param.SqlDbType = SqlDbType.Text;      
+            //cmd.Parameters.Add(param);
+			
+			try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            catch
+            {
+                Console.WriteLine("Ошибка, при выполнении запроса на удаление записи");
+                return;
+            }
+            connection.Close();
 		}
 	}
 }

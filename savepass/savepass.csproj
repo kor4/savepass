@@ -43,6 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
+    <Compile Include="FormEditAccount.cs" />
+    <Compile Include="FormEditAccount.Designer.cs">
+      <DependentUpon>FormEditAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sqlite3.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
@@ -52,6 +56,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormEditAccount.resx">
+      <DependentUpon>FormEditAccount.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

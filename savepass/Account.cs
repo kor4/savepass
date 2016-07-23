@@ -23,7 +23,7 @@ namespace savepass
 		private string _email;
 		private string _note;
 		private bool _isOk;
-		
+		public bool isNull;
 
 		public string getWebName()
 		{
@@ -40,9 +40,11 @@ namespace savepass
 			return _email;
 		}
 		
+		
 		public string getPasswordCr()
 		{
-			return _passwordCr;
+			//return _passwordCr;
+			return _password;
 		}
 		
 		public string getNote()
@@ -50,15 +52,20 @@ namespace savepass
 			return _note;
 		}
 		
-		public Account(string str1,string str2, string str3, string str4, string str5, string str6 )
+		public Account()
 		{
-			this._webName=str1;
-			this._nameAccount=str2;
-			this._password = str3;
-			this._password2 = str4;
-			this._email = str5;
-			this._note = str6 ;
-			//writeToFile();	
+			this.isNull = true;	
+		}
+		
+		public void fillAccount(string res_name, string login, string email, string note, string pw, string pw2)
+		{
+			this.isNull = false;
+			this._webName = res_name;
+			this._nameAccount = login;
+			this._password = pw;
+			this._password2 = pw2;
+			this._email = email;
+			this._note = note ;
 		}
 	//public string readacc(){
 	//	return NameAccount + "\n " + Password;
@@ -67,6 +74,7 @@ namespace savepass
 		public bool checkCorrectAcc()
 		{
 			this.checkPasswEqual();
+			this.encryptPassw();
 			return _isOk;
 			
 		}
@@ -75,7 +83,6 @@ namespace savepass
 			if (this._password == this._password2) 
 			{
 				this._isOk = true;
-				this._passwordCr = encryptPassw();
 				Console.WriteLine("passwords is equal");			
 				
 			}
@@ -85,12 +92,30 @@ namespace savepass
 				Console.WriteLine("passwords is unequal");
 			}
 		}
-	
-		private string encryptPassw()
+		
+		//simple way;
+		private void encryptPassw()
 		{
-			string passw_encr = "1";
+			char[] characters_passw = _password.ToCharArray();
+			int[] code_characters = new int[_password.Length];
+			char[] encr_characters = new char[_password.Length];
+			int[] encr_code = new int [_password.Length];
+			
+			for (int i = 0; i < this._password.Length; i++)
+			{
+				code_characters[i] = ((int)characters_passw[i]);
+				encr_code[i] = code_characters[i] + 3;// for example
+				encr_characters[i] = ((char)encr_code[i]);
+			}
+			
+			//string psw = new string(encr_characters);
+			this._passwordCr = new string(encr_characters);
 			// Add method of encryption
-			return _password;
+			//return _password;
+		}
+		
+		private void encryptRsa()
+		{
 		}
 		
 		private string decrypt_passw()
